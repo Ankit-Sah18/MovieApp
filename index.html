@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Info App</title>
+    <style>
+#head{
+    text-align: center;
+    margin-bottom: 50px;
+    color: brown;
+    
+}
+#container{
+    padding: 50px;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    height: 700px;
+    
+}
+
+body{
+    background-color: rgb(29, 123, 163);
+    color: white;
+}
+
+#submit{
+    padding: 5px 80px;
+    font-size: 20px;
+    margin: auto;
+    margin-top: 30px;
+    display: block;
+    margin-top: 30px;
+    background-color: rgb(128, 14, 81);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+#movie{
+    width: 10%;
+    padding: 10px 150px 10px 150px;
+    margin: auto;
+    margin-top: 20px;
+    color: white;
+    font-size: 20px;
+    background-color: rgb(169, 17, 17);
+    border-radius: 10px;
+    text-align: center;
+    
+
+}
+#box{
+    width: 35%;
+    margin: auto;
+   
+}
+
+img{
+    width: 60%;
+    margin-left: 20%;
+    height: 400px;
+}
+p{
+    font-size: larger;
+    font-style: italic;
+    color: chartreuse;
+    
+}
+</style>
+</head>
+<body>
+    <div id="head">
+        <h1>Movie Info App</h1>
+        <form onsubmit="movies(event)">
+        <input type="text" name="" id="movie" placeholder=" Movie Name">
+        <br>
+        <input type="submit" value="Search" id="submit">
+    </form>
+    </div>
+    <div id="container">
+        
+    </div>
+    
+</body>
+</html>
+<script>
+    
+
+let apikey ="999b0b95";
+function movies(event)
+{
+    event.preventDefault();
+    let movieName=document.getElementById("movie").value;
+    
+
+    let url ="http://www.omdbapi.com/?apikey="+apikey;
+    url=url+"&t="+movieName;
+
+    // let url="https://api.themoviedb.org/3/search/movie?api_key=0eaad18ad8092d58cef6b9db7c793e13&language=en-US&page=1&include_adult=false";
+
+    fetch(url)
+    .then(function (res)
+    {
+        return res.json();
+    })
+    .then(function(res)
+    {
+        console.log(res);
+        appendData(res);
+    })
+    .catch(function(err)
+    {
+        console.log("err:",err);
+    });
+}
+
+function appendData(data)
+{
+    console.log(data);
+    if(data.Response=="false")
+    {
+        document.getElementById("container").innerHTML=null;
+        let box=document.createElement("div");
+       
+        let img=document.createElement("img");
+        img.src="https://media1.giphy.com/media/KXckvpyXLQ9PosbxaA/200w.webp?cid=ecf05e476z7q24ps1i0zvi3nigbi9jc8k703zkdtjtid7ytc&rid=200w.webp&ct=g";
+        box.append(img);
+        document.getElementById("container").append(img);
+    }
+    else{
+        document.getElementById("container").innerHTML=null;
+        let box=document.createElement("div");
+        box.setAttribute("id","box")
+
+        let poster=document.createElement("img");
+        poster.src=data.Poster;
+
+        let div=document.createElement("div");
+
+        let title=document.createElement("p");
+        title.innerText=`Title: ${data.Title}`;
+
+        let actor=document.createElement("p");
+        actor.innerText=`Actors: ${data.Actors}`;
+
+        let release=document.createElement("p");
+        release.innerText=`Release Date: ${data.Released}`;
+
+    if(Number(data.imdbRating)>8.5)
+    {
+        var rating=document.createElement("p");
+        let i=document.createElement("i");
+        
+        rating.append(i);
+        rating.innerText=`Rating: ${data.imdbRating}`;
+    }
+    else{
+        var rating=document.createElement("p");
+        rating.innerText=`Rating: ${data.imdbRating}`;
+    }
+
+
+    div.append(title,actor,release,rating);
+    box.append(poster,div);
+    document.getElementById("container").append(box);
+    }
+
+}
+</script>
